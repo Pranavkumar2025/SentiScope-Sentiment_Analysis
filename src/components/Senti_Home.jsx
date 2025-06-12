@@ -95,7 +95,12 @@ export default function SentiHome() {
             {
               parts: [
                 {
-                  text: `Analyze the sentiment of this text: "${textToAnalyze}". Respond in this format:\nSentiment: <Positive|Negative|Neutral>\nEmotion: <comma separated emotions>\nConfidence: <0 to 1>\nSummary: <short analysis>`,
+                  text: `Analyze the sentiment of this user message: "${textToAnalyze}". Consider both emotional tone and implied meaning. Respond ONLY in this format:
+Sentiment: <Positive|Negative|Neutral>
+Emotion: <comma separated emotions>
+Confidence: <0.00 to 1.00>
+Summary: <short summary of how the user feels>`
+                  ,
                 },
               ],
             },
@@ -202,9 +207,8 @@ export default function SentiHome() {
           <button
             onClick={analyzeSentiment}
             disabled={loading || !inputValue.trim()}
-            className={`mb-10 px-6 py-2 ${
-              loading ? "bg-gray-600" : "bg-purple-600 hover:bg-purple-700"
-            } text-white rounded shadow`}
+            className={`mb-10 px-6 py-2 ${loading ? "bg-gray-600" : "bg-purple-600 hover:bg-purple-700"
+              } text-white rounded shadow`}
           >
             {loading ? "Analyzing..." : "Analyze Sentiment"}
           </button>
