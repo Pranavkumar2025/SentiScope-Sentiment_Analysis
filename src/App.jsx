@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import SentiHome from "./components/Senti_Home";
+import AboutProject from "./components/AboutProject";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/senti" element={<SentiHome />} />
+        <Route path ="/about" element={<AboutProject/>}/>
       </Routes>
     </Router>
   );
