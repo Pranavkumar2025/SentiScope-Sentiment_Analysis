@@ -1,4 +1,3 @@
-// ✅ Full updated and fixed SentiHome.jsx
 import React, { useState, useEffect } from "react";
 import { auth, signOut } from "../firebaseConfig";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +15,7 @@ import {
 } from "recharts";
 import { Mic, MicOff } from "lucide-react";
 import Historypage from "./Historypage";
+import backVideo from "../assets/video.mp4";
 
 const COLORS = ["#6a0dad", "#0f9d58", "#d93025", "#ff9800", "#2196f3"];
 
@@ -33,7 +33,7 @@ export default function SentiHome() {
   const [listening, setListening] = useState(false);
   const [history, setHistory] = useState([]);
 
-  const GEMINI_API_KEY = "AIzaSyDpxbWMLGsfBwmsHpjGVK0ytk1l-2LaXVw";
+ const GEMINI_API_KEY = "AIzaSyDpxbWMLGsfBwmsHpjGVK0ytk1l-2LaXVw";
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -100,7 +100,6 @@ Sentiment: <Positive|Negative|Neutral>
 Emotion: <comma separated emotions>
 Confidence: <0.00 to 1.00>
 Summary: <short summary of how the user feels>`
-                  ,
                 },
               ],
             },
@@ -133,7 +132,6 @@ Summary: <short summary of how the user feels>`
 
     setEmotion(emotionList);
 
-    // ✅ Push to history
     setHistory((prev) => [
       ...prev,
       {
@@ -147,7 +145,6 @@ Summary: <short summary of how the user feels>`
     setLoading(false);
   };
 
-  // 🎤 Speech Recognition
   const handleMicClick = () => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -165,121 +162,160 @@ Summary: <short summary of how the user feels>`
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1f0036] via-[#2c003e] to-[#3a0056] text-white">
-      <header className="flex items-center justify-between px-8 py-4 bg-[#2a0050] shadow-md">
-        <h1 className="text-2xl font-extrabold tracking-wide text-indigo-100">SentiCode AI</h1>
-        <button
-          onClick={handleSignOut}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md"
-        >
-          Sign Out
-        </button>
-      </header>
+    <div className="relative min-h-screen overflow-hidden text-white">
+      {/* 🔁 Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+      >
+        <source src={backVideo} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
 
-      <main className="p-6 max-w-6xl mx-auto w-full">
-        <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold mb-1">Welcome, {userName} 👋</h2>
-          <p className="text-indigo-200">Enter some text or a URL to analyze its sentiment.</p>
-        </div>
+      {/* 🔳 Overlay for readability */}
+      <div className="relative z-10 backdrop-blur-md bg-black/60">
+        
+       <header className="flex items-center justify-between px-8 py-4 bg-gradient-to-r from-[#2c003e] via-[#3a0056] to-[#4e006a] shadow-lg border-b border-purple-800 relative z-20 backdrop-blur-md">
+  {/* 🔰 Left: App Title */}
+  <div className="flex items-center gap-3">
+    <h1 className="text-2xl font-extrabold tracking-wide text-white drop-shadow-md">
+      SentiCode AI
+    </h1>
+  </div>
 
-        <div className="flex justify-center mb-4 gap-4">
-          <select
-            className="bg-purple-900 text-white px-4 py-2 rounded-lg shadow-md"
-            value={inputMode}
-            onChange={(e) => setInputMode(e.target.value)}
-          >
-            <option value="text">Text</option>
-            <option value="url">URL</option>
-          </select>
-          <button onClick={handleMicClick} className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded-lg">
-            {listening ? <MicOff /> : <Mic />}
-          </button>
-        </div>
+  {/* 🕒 Center: Current Time */}
+  <div className="hidden md:flex text-purple-200 font-mono text-sm tracking-wide">
+    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+  </div>
 
-        <textarea
-          className="w-full h-36 p-4 border rounded-lg mb-4 bg-white/10 text-white placeholder-gray-300"
-          placeholder={inputMode === "text" ? "Type your text..." : "Paste the URL here..."}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
+  {/* 🧑 Right: User Info + Sign Out */}
+  <div className="flex items-center gap-4">
+    <div className="flex items-center gap-2">
+      <div className="w-9 h-9 rounded-full bg-white/30 backdrop-blur-sm text-sm font-bold text-white flex items-center justify-center shadow-inner">
+        {userName?.[0] || "U"}
+      </div>
+      <span className="hidden sm:inline text-white text-sm font-semibold">
+        {userName}
+      </span>
+    </div>
+    <button
+      onClick={handleSignOut}
+      className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 transition-all duration-200 text-white px-4 py-2 rounded-lg shadow-md text-sm font-medium"
+    >
+      Sign Out
+    </button>
+  </div>
+</header>
 
-        <div className="text-center">
-          <button
-            onClick={analyzeSentiment}
-            disabled={loading || !inputValue.trim()}
-            className={`mb-10 px-6 py-2 ${loading ? "bg-gray-600" : "bg-purple-600 hover:bg-purple-700"
-              } text-white rounded shadow`}
-          >
-            {loading ? "Analyzing..." : "Analyze Sentiment"}
-          </button>
-        </div>
 
-        {result && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            className="bg-gradient-to-r from-[#31005a] to-[#450080] p-6 rounded-lg shadow-lg mb-10"
-          >
-            <h3 className="text-2xl font-bold mb-2">🎯 Analysis Result</h3>
-            <p className="text-lg"><strong>Sentiment:</strong> <span className="text-yellow-300">{sentiment}</span></p>
-            <p className="text-lg"><strong>Confidence:</strong> <span className="text-green-400">{confidence}</span></p>
-            <p className="text-lg"><strong>Summary:</strong> <span className="italic">{summary}</span></p>
-            <p className="text-lg"><strong>Emotions:</strong> <span className="text-pink-400">{emotion.map(e => e.name).join(", ") || "None"}</span></p>
-          </motion.div>
-        )}
-
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="h-64">
-            <h3 className="text-white text-lg mb-2">📊 Sentiment Overview</h3>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={[{ name: sentiment, value: 1 }]}>
-                <XAxis dataKey="name" stroke="#ccc" />
-                <YAxis stroke="#ccc" />
-                <Tooltip />
-                <Bar dataKey="value" fill="#6a0dad" barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
+        <main className="p-6 max-w-6xl mx-auto w-full">
+          <div className="text-center mb-6">
+            <h2 className="text-3xl font-bold mb-1">Welcome, {userName} 👋</h2>
+            <p className="text-indigo-200">Enter some text or a URL to analyze its sentiment.</p>
           </div>
 
-          <div className="h-64">
-            <h3 className="text-white text-lg mb-2">🧠 Emotion Breakdown</h3>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={emotion}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  label
-                >
-                  {emotion.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="flex justify-center mb-4 gap-4">
+            <select
+              className="bg-purple-900 text-white px-4 py-2 rounded-lg shadow-md"
+              value={inputMode}
+              onChange={(e) => setInputMode(e.target.value)}
+            >
+              <option value="text">Text</option>
+              <option value="url">URL</option>
+            </select>
+            <button onClick={handleMicClick} className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded-lg">
+              {listening ? <MicOff /> : <Mic />}
+            </button>
           </div>
 
-          <div className="h-64">
-            <h3 className="text-white text-lg mb-2">📶 Confidence Level</h3>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={[{ name: "Confidence", value: parseFloat(confidence) }]}>
-                <XAxis dataKey="name" stroke="#ccc" />
-                <YAxis domain={[0, 1]} stroke="#ccc" />
-                <Tooltip />
-                <Bar dataKey="value" fill="#0f9d58" barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+          <textarea
+            className="w-full h-36 p-4 border rounded-lg mb-4 bg-white/10 text-white placeholder-gray-300"
+            placeholder={inputMode === "text" ? "Type your text..." : "Paste the URL here..."}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
 
-        {/* 🕘 History Section */}
-        <Historypage history={history} />
-      </main>
+          <div className="text-center">
+            <button
+              onClick={analyzeSentiment}
+              disabled={loading || !inputValue.trim()}
+              className={`mb-10 px-6 py-2 ${loading ? "bg-gray-600" : "bg-purple-600 hover:bg-purple-700"
+                } text-white rounded shadow`}
+            >
+              {loading ? "Analyzing..." : "Analyze Sentiment"}
+            </button>
+          </div>
+
+          {result && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className="bg-gradient-to-r from-[#31005a] to-[#450080] p-6 rounded-lg shadow-lg mb-10"
+            >
+              <h3 className="text-2xl font-bold mb-2">🎯 Analysis Result</h3>
+              <p className="text-lg"><strong>Sentiment:</strong> <span className="text-yellow-300">{sentiment}</span></p>
+              <p className="text-lg"><strong>Confidence:</strong> <span className="text-green-400">{confidence}</span></p>
+              <p className="text-lg"><strong>Summary:</strong> <span className="italic">{summary}</span></p>
+              <p className="text-lg"><strong>Emotions:</strong> <span className="text-pink-400">{emotion.map(e => e.name).join(", ") || "None"}</span></p>
+            </motion.div>
+          )}
+
+          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="h-64">
+              <h3 className="text-white text-lg mb-2">📊 Sentiment Overview</h3>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={[{ name: sentiment, value: 1 }]}>
+                  <XAxis dataKey="name" stroke="#ccc" />
+                  <YAxis stroke="#ccc" />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#6a0dad" barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="h-64">
+              <h3 className="text-white text-lg mb-2">🧠 Emotion Breakdown</h3>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={emotion}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    label
+                  >
+                    {emotion.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="h-64">
+              <h3 className="text-white text-lg mb-2">📶 Confidence Level</h3>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={[{ name: "Confidence", value: parseFloat(confidence) }]}>
+                  <XAxis dataKey="name" stroke="#ccc" />
+                  <YAxis domain={[0, 1]} stroke="#ccc" />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#0f9d58" barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* 🕘 History Section */}
+          <Historypage history={history} />
+        </main>
+      </div>
     </div>
   );
 }
