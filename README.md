@@ -1,4 +1,5 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 # 🎯 SentiCode AI
 
 SentiCode AI is a smart sentiment and emotion analysis web app built using **React**, **Framer Motion**, **Firebase Auth**, **Recharts**, and **Google Gemini API**. It allows users to analyze the **tone**, **emotion**, and **confidence level** of any text or webpage — with speech input, real-time graphs, and analysis history.
