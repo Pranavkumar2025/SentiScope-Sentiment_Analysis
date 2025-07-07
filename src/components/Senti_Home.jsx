@@ -33,7 +33,7 @@ export default function SentiHome() {
   const [listening, setListening] = useState(false);
   const [history, setHistory] = useState([]);
 
- const GEMINI_API_KEY = "AIzaSyDpxbWMLGsfBwmsHpjGVK0ytk1l-2LaXVw";
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -177,38 +177,38 @@ Summary: <short summary of how the user feels>`
 
       {/* 🔳 Overlay for readability */}
       <div className="relative z-10 backdrop-blur-md bg-black/60">
-        
-       <header className="flex items-center justify-between px-8 py-4 bg-gradient-to-r from-[#2c003e] via-[#3a0056] to-[#4e006a] shadow-lg border-b border-purple-800 relative z-20 backdrop-blur-md">
-  {/* 🔰 Left: App Title */}
-  <div className="flex items-center gap-3">
-    <h1 className="text-2xl font-extrabold tracking-wide text-white drop-shadow-md">
-      SentiCode AI
-    </h1>
-  </div>
 
-  {/* 🕒 Center: Current Time */}
-  <div className="hidden md:flex text-purple-200 font-mono text-sm tracking-wide">
-    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-  </div>
+        <header className="flex items-center justify-between px-8 py-4 bg-gradient-to-r from-[#2c003e] via-[#3a0056] to-[#4e006a] shadow-lg border-b border-purple-800 relative z-20 backdrop-blur-md">
+          {/* 🔰 Left: App Title */}
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-extrabold tracking-wide text-white drop-shadow-md">
+              SentiCode AI
+            </h1>
+          </div>
 
-  {/* 🧑 Right: User Info + Sign Out */}
-  <div className="flex items-center gap-4">
-    <div className="flex items-center gap-2">
-      <div className="w-9 h-9 rounded-full bg-white/30 backdrop-blur-sm text-sm font-bold text-white flex items-center justify-center shadow-inner">
-        {userName?.[0] || "U"}
-      </div>
-      <span className="hidden sm:inline text-white text-sm font-semibold">
-        {userName}
-      </span>
-    </div>
-    <button
-      onClick={handleSignOut}
-      className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 transition-all duration-200 text-white px-4 py-2 rounded-lg shadow-md text-sm font-medium"
-    >
-      Sign Out
-    </button>
-  </div>
-</header>
+          {/* 🕒 Center: Current Time */}
+          <div className="hidden md:flex text-purple-200 font-mono text-sm tracking-wide">
+            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
+
+          {/* 🧑 Right: User Info + Sign Out */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-full bg-white/30 backdrop-blur-sm text-sm font-bold text-white flex items-center justify-center shadow-inner">
+                {userName?.[0] || "U"}
+              </div>
+              <span className="hidden sm:inline text-white text-sm font-semibold">
+                {userName}
+              </span>
+            </div>
+            <button
+              onClick={handleSignOut}
+              className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 transition-all duration-200 text-white px-4 py-2 rounded-lg shadow-md text-sm font-medium"
+            >
+              Sign Out
+            </button>
+          </div>
+        </header>
 
 
         <main className="p-6 max-w-6xl mx-auto w-full">

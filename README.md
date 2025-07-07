@@ -31,7 +31,6 @@ SentiCode AI is a smart sentiment and emotion analysis web app built using **Rea
 ### 📜 Analysis History
 ![Screenshot 3](./src/assets/screenshot/Screenshot%20(269).png)
 
-> 💡 _Place your screenshots in a `/screenshots/` folder inside your project root._
 
 ---
 
